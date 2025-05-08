@@ -24,6 +24,6 @@ void initGame(GameState* gameState);
 void updateGame(GameState* gameState);
 void checkCollisions(GameState* gameState);
 void spawnNewObject(GameState* gameState);
-void showGameOver(int score);
+// 游戏结束界面（已移至render.h中声明）
 
 #endif
