@@ -1,7 +1,3 @@
-/**
- * utils.c - 通用工具函数
- */
-
 #include <windows.h>
 #include "../include/utils.h"
 

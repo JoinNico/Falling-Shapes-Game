@@ -4,7 +4,7 @@
 #include "../include/game.h"
 #include "../include/utils.h"
 
-// 原始控制台属性，用于恢复
+// 原始控制台属性，用于游戏结束后的终端恢复
 HANDLE hConsole;
 CONSOLE_CURSOR_INFO originalCursorInfo;
 CONSOLE_SCREEN_BUFFER_INFO originalScreenInfo;
@@ -17,8 +17,8 @@ void initConsole() {
     // 隐藏光标
     CONSOLE_CURSOR_INFO cursorInfo;
     GetConsoleCursorInfo(hConsole, &originalCursorInfo);
-    cursorInfo.dwSize = 1;
-    cursorInfo.bVisible = FALSE;
+    cursorInfo.dwSize = 1;//光标的大小 1%
+    cursorInfo.bVisible = FALSE;//光标是否可见 false-否 true-是
     SetConsoleCursorInfo(hConsole, &cursorInfo);
     
     // 保存原始屏幕信息
@@ -30,8 +30,7 @@ void initConsole() {
     
     SetConsoleScreenBufferSize(hConsole, bufferSize);
     SetConsoleWindowInfo(hConsole, TRUE, &windowSize);
-    
-    // 清屏
+
     clearScreen();
 }
 
@@ -39,7 +38,6 @@ void initConsole() {
 void restoreConsole() {
     // 恢复光标可见性
     SetConsoleCursorInfo(hConsole, &originalCursorInfo);
-    
     // 恢复颜色
     SetConsoleTextAttribute(hConsole, originalScreenInfo.wAttributes);
 }
@@ -48,11 +46,11 @@ void restoreConsole() {
 void clearScreen() {
     COORD coordScreen = {0, 0};
     DWORD cCharsWritten;
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    CONSOLE_SCREEN_BUFFER_INFO csbi;//控制台屏幕缓冲区信息 结构体类型的变量名缩写
     DWORD dwConSize;
     
     GetConsoleScreenBufferInfo(hConsole, &csbi);
-    dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
+    dwConSize = csbi.dwSize.X * csbi.dwSize.Y; //计算需要清除的字符总数
     
     FillConsoleOutputCharacter(hConsole, ' ', dwConSize, coordScreen, &cCharsWritten);
     FillConsoleOutputAttribute(hConsole, csbi.wAttributes, dwConSize, coordScreen, &cCharsWritten);
@@ -60,22 +58,16 @@ void clearScreen() {
     SetConsoleCursorPosition(hConsole, coordScreen);
 }
 
-// 渲染游戏
+// 渲染游戏画面
 void renderGame(GameState* gameState) {
-    // 绘制边界
     drawBorder();
-    
     // 绘制所有活跃的下落物体
     for (int i = 0; i < MAX_FALLING_OBJECTS; i++) {
         if (gameState->objects[i].isActive) {
             drawFallingObject(&gameState->objects[i]);
         }
     }
-    
-    // 绘制玩家(三角形)
     drawPlayer(&gameState->player);
-    
-    // 绘制分数
     drawScore(gameState->score);
 }
 
@@ -131,7 +123,6 @@ void drawPlayer(Player* player) {
 
 // 绘制下落物体
 void drawFallingObject(FallingObject* object) {
-    // 为不同类型的形状设置不同颜色
     switch (object->type) {
         case 0: // 星形 - 黄色
             SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
@@ -150,7 +141,7 @@ void drawFallingObject(FallingObject* object) {
             break;
     }
     
-    // 绘制不同形状
+    // 绘制不同下落形状
     gotoxy(object->x, object->y);
     switch (object->type) {
         case 0: printf("*"); break;  // 星形
@@ -164,7 +155,7 @@ void drawFallingObject(FallingObject* object) {
     SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 }
 
-// 绘制分数
+// 绘制分数和游戏提示
 void drawScore(int score) {
     gotoxy(GAME_WIDTH + 2, 2);
     printf("分数: %d", score);

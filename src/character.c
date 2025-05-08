@@ -1,7 +1,3 @@
-/**
- * character.c - 角色和物体实现
- */
-
 #include "../include/character.h"
 #include "../include/game.h"
 

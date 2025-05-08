@@ -1,7 +1,3 @@
-/**
- * game.h - 游戏规则和状态定义
- */
-
 #ifndef GAME_H
 #define GAME_H
 
@@ -24,19 +20,10 @@ typedef struct {
     int isGameOver;                  // 游戏是否结束
 } GameState;
 
-// 游戏初始化
 void initGame(GameState* gameState);
-
-// 更新游戏状态
 void updateGame(GameState* gameState);
-
-// 检查碰撞并处理得分
 void checkCollisions(GameState* gameState);
-
-// 生成新的下落物体
 void spawnNewObject(GameState* gameState);
-
-// 游戏结束界面
 void showGameOver(int score);
 
-#endif // GAME_H
+#endif

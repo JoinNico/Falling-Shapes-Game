@@ -11,7 +11,7 @@ void processInput(GameState* gameState) {
         int key = _getch();
         
         // 检查是否为方向键
-        if (key == 224) {  // 方向键的前缀
+        if (key == 0 || key == 224) {  // 方向键的前缀
             key = _getch();  // 获取方向键的实际值
             
             switch (key) {

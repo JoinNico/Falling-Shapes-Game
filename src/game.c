@@ -1,7 +1,3 @@
-/**
- * game.c - 游戏规则和状态实现
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -10,7 +6,7 @@
 #include "../include/render.h"
 #include "../include/utils.h"
 
-// 游戏初始化
+// 初始化游戏
 void initGame(GameState* gameState) {
     // 初始化玩家
     gameState->player.x = GAME_WIDTH / 2;
@@ -27,7 +23,7 @@ void initGame(GameState* gameState) {
     gameState->frameCount = 0;
     gameState->isGameOver = 0;
     
-    // 生成初始下落物体
+    // 一次性生成多个初始下落物体
     for (int i = 0; i < 5; i++) {
         spawnNewObject(gameState);
     }
@@ -49,7 +45,7 @@ void updateGame(GameState* gameState) {
             if (gameState->frameCount % gameState->objects[i].speed == 0) {
                 gameState->objects[i].y++;
                 
-                // 如果物体到达底部，移除它
+                // 如果物体到达底部，移除
                 if (gameState->objects[i].y >= GAME_HEIGHT) {
                     gameState->objects[i].isActive = 0;
                     gameState->activeObjects--;
@@ -57,8 +53,7 @@ void updateGame(GameState* gameState) {
             }
         }
     }
-    
-    // 检查碰撞
+
     checkCollisions(gameState);
 }
 
