@@ -1,8 +1,3 @@
-/**
- * main.c - 程序入口和主循环
- * 下落形状捕捉游戏
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <Windows.h>
@@ -14,9 +9,6 @@
 #include "utils.h"
 
 int main() {
-    //设置控制台输出为 UTF-8 编码
-    SetConsoleOutputCP(65001);
-
     // 初始化随机数种子
     srand((unsigned int)time(NULL));
 

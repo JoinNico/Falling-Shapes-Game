@@ -23,6 +23,7 @@ void drawFallingObject(FallingObject* object);
 void drawScore(int score);
 void showGameOver(int score);
 void writeToBuffer(int x, int y, char ch, WORD attributes);
+void writeWCharToBuffer(int x, int y, WCHAR ch, WORD attributes);  // 新增宽字符函数
 void writeStringToBuffer(int x, int y, const char* str, WORD attributes);
 
 #endif

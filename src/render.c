@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include <string.h>
+#include <wchar.h>  // 添加宽字符支持
 #include "render.h"
 #include "game.h"
 #include "utils.h"
@@ -19,6 +20,21 @@ void initConsole() {
     // 获取控制台句柄
     hConsole = GetStdHandle(STD_INPUT_HANDLE);
     hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    // 设置控制台代码页为UTF-8
+    SetConsoleOutputCP(65001);
+    SetConsoleCP(65001);
+
+    // 设置控制台字体
+    CONSOLE_FONT_INFOEX cfi;
+    cfi.cbSize = sizeof(cfi);
+    cfi.nFont = 0;
+    cfi.dwFontSize.X = 0;
+    cfi.dwFontSize.Y = 16;
+    cfi.FontFamily = FF_DONTCARE;
+    cfi.FontWeight = FW_NORMAL;
+    wcscpy(cfi.FaceName, L"新宋体"); // 使用支持中文的字体
+    SetCurrentConsoleFontEx(hConsoleOutput, FALSE, &cfi);
 
     // 隐藏光标
     CONSOLE_CURSOR_INFO cursorInfo;
@@ -70,7 +86,7 @@ void restoreConsole() {
 // 清除缓冲区
 void clearBuffer() {
     CHAR_INFO clearChar;
-    clearChar.Char.AsciiChar = ' ';
+    clearChar.Char.UnicodeChar = L' ';  // 使用UnicodeChar而不是AsciiChar
     clearChar.Attributes = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
 
     // 填充整个缓冲区为空格字符
@@ -81,7 +97,7 @@ void clearBuffer() {
 
 // 将缓冲区内容刷新到屏幕
 void flushBuffer() {
-    WriteConsoleOutput(
+    WriteConsoleOutputW(  // 使用WriteConsoleOutputW而不是WriteConsoleOutput
             hConsoleOutput,
             screenBuffer.buffer,
             screenBuffer.bufferSize,
@@ -101,16 +117,40 @@ void writeToBuffer(int x, int y, char ch, WORD attributes) {
     int index = y * screenBuffer.bufferSize.X + x;
 
     // 将字符和属性写入缓冲区
-    screenBuffer.buffer[index].Char.AsciiChar = ch;
+    screenBuffer.buffer[index].Char.UnicodeChar = (WCHAR)ch;  // 转换为宽字符
+    screenBuffer.buffer[index].Attributes = attributes;
+}
+
+// 在缓冲区指定位置写入宽字符
+void writeWCharToBuffer(int x, int y, WCHAR ch, WORD attributes) {
+    // 检查坐标是否在有效范围内
+    if (x < 0 || x >= screenBuffer.bufferSize.X || y < 0 || y >= screenBuffer.bufferSize.Y) {
+        return;
+    }
+
+    // 计算缓冲区索引
+    int index = y * screenBuffer.bufferSize.X + x;
+
+    // 将字符和属性写入缓冲区
+    screenBuffer.buffer[index].Char.UnicodeChar = ch;
     screenBuffer.buffer[index].Attributes = attributes;
 }
 
 // 在缓冲区指定位置写入字符串
 void writeStringToBuffer(int x, int y, const char* str, WORD attributes) {
+    // 转换为宽字符串
     int length = strlen(str);
-    for (int i = 0; i < length; i++) {
-        writeToBuffer(x + i, y, str[i], attributes);
+    wchar_t* wstr = (wchar_t*)malloc(sizeof(wchar_t) * (length + 1));
+
+    // 转换UTF-8字符串为宽字符串
+    MultiByteToWideChar(CP_UTF8, 0, str, -1, wstr, length + 1);
+
+    // 写入宽字符串
+    for (int i = 0; wstr[i] != L'\0'; i++) {
+        writeWCharToBuffer(x + i, y, wstr[i], attributes);
     }
+
+    free(wstr);
 }
 
 // 渲染游戏
