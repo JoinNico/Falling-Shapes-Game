@@ -21,6 +21,7 @@ void drawBorder();
 void drawPlayer(Player* player);
 void drawFallingObject(FallingObject* object);
 void drawScore(int score);
+void drawTime(int timeRemaining);
 void showGameOver(int score);
 void writeToBuffer(int x, int y, char ch, WORD attributes);
 void writeWCharToBuffer(int x, int y, WCHAR ch, WORD attributes);  // 新增宽字符函数

@@ -174,6 +174,9 @@ void renderGame(GameState* gameState) {
     // 绘制分数
     drawScore(gameState->score);
 
+    // 绘制剩余时间
+    drawTime(gameState->timeRemaining);
+
     // 将缓冲区内容刷新到屏幕
     flushBuffer();
 }
@@ -252,6 +255,26 @@ void drawFallingObject(FallingObject* object) {
     } else {
         writeToBuffer(object->x, object->y, objectChar[0], objectColor);
     }
+}
+
+// 绘制时间
+void drawTime(int timeRemaining) {
+    // 设置时间文本颜色
+    WORD timeColor;
+
+    // 根据剩余时间设置不同颜色
+    if (timeRemaining > 30) {
+        timeColor = FOREGROUND_GREEN | FOREGROUND_INTENSITY; // 绿色
+    } else if (timeRemaining > 10) {
+        timeColor = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY; // 黄色
+    } else {
+        timeColor = FOREGROUND_RED | FOREGROUND_INTENSITY; // 红色
+    }
+
+    // 显示剩余时间
+    char timeText[32];
+    sprintf(timeText, "剩余时间: %d 秒", timeRemaining);
+    writeStringToBuffer(GAME_WIDTH + 2, 1, timeText, timeColor);
 }
 
 // 绘制分数和游戏说明

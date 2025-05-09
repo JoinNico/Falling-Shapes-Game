@@ -31,7 +31,7 @@ Special thanks to DeepSeek and Claude for their assistance in code construction.
 ## Scoring Rules / 得分规则
 The game features five different shapes with corresponding scores:
 游戏中有5种不同形状，每种形状对应不同分数：
-1. Star(*) - 10 points / 星形(*) - 10分
+1. Star(\*) - 10 points / 星形(\*) - 10分
 2. Square(#) - 20 points / 方形(#) - 20分
 3. Circle(O) - 30 points / 圆形(O) - 30分
 4. Diamond(<>) - 40 points / 菱形(<>) - 40分

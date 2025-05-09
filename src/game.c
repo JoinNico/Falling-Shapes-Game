@@ -23,6 +23,10 @@ void initGame(GameState* gameState) {
     gameState->frameCount = 0;
     gameState->isGameOver = 0;
 
+    // 初始化游戏时间
+    gameState->startTime = clock();
+    gameState->timeRemaining = GAME_TIME_LIMIT;
+
     // 生成初始下落物体
     for (int i = 0; i < 5; i++) {
         spawnNewObject(gameState);
@@ -32,6 +36,18 @@ void initGame(GameState* gameState) {
 // 更新游戏状态
 void updateGame(GameState* gameState) {
     gameState->frameCount++;
+
+    // 计算剩余时间
+    clock_t currentTime = clock();
+    int elapsedSeconds = (currentTime - gameState->startTime) / CLOCKS_PER_SEC;
+    gameState->timeRemaining = GAME_TIME_LIMIT - elapsedSeconds;
+
+    // 检查时间是否用完
+    if (gameState->timeRemaining <= 0) {
+        gameState->timeRemaining = 0;
+        gameState->isGameOver = 1;
+        return;
+    }
 
     // 每隔一定帧数生成新的下落物体
     if (gameState->frameCount % 20 == 0) {
@@ -126,5 +142,3 @@ void spawnNewObject(GameState* gameState) {
         gameState->activeObjects++;
     }
 }
-
-// 游戏结束界面已移到render.c中实现
