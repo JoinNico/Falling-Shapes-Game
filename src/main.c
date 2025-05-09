@@ -7,7 +7,7 @@
 #include "render.h"
 #include "input.h"
 #include "utils.h"
-
+//这是一个测试新分支的注释
 int main() {
     // 初始化随机数种子
     srand((unsigned int)time(NULL));
